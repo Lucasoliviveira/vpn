@@ -126,7 +126,7 @@ echo ""
 echo ""
 echo -e "          \033[1;37m[\033[1;31m!\033[1;37m] \033[1;32mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m!\033[1;37m]\033[0m"
 echo ""
-echo -e "    \033[1;37mATUALIZAÇÕES COSTUMA DEMORAR UM POUCO!\033[0m"
+echo -e "    \033[1;37mATUALIZAÇÕES COSTUMAM DEMORAR UM POUCO!\033[0m"
 echo ""
 fun_attlist () {
 apt-get update -y
@@ -150,7 +150,7 @@ clear
 echo ""
 echo -e "          \033[1;37m[\033[1;31m!\033[1;37m] \033[1;32mINSTALANDO PACOTES \033[1;37m[\033[1;31m!\033[1;37m] \033[0m"
 echo ""
-echo -e "                  \033[1;37mATUALIZANDO PACOTES!\033[0m"
+echo -e "              \033[1;37mATUALIZANDO PACOTES!\033[0m"
 echo ""
 inst_pct () {
 _pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" "dos2unix" "nload" "jq" "curl" "figlet" "python3" "python-pip" "firewalld")
