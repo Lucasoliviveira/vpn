@@ -7,7 +7,6 @@ clear
 	echo -e "\033[1;31mEXECULTE COMO USUARIO ROOT, \033[1;32m(\033[1;33msudo -i\033[1;32m)\033[0m"
 	exit
 }
-
 iptables -F
 echo 'nameserver 1.1.1.1' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
