@@ -248,7 +248,24 @@ fun_edithost() {
     fi
 }
 
-fun_usertoken() 
+fun_usertoken() {
+    clear
+    tput setaf 7
+    tput setab 4
+    tput bold
+    printf '%30s%s%-15s\n' "CRIAR TOKEN SSH"
+    tput sgr0
+    echo ""
+    echo -ne "\033[1;32mINSIRA O TOKEN:\033[1;37m "
+    read username
+    [[ -z $username ]] && {
+        echo -e "\n${cor1}TOKEN VAZIO OU INVALIDO!${scor}\n"
+        exit 1
+    }
+    [[ "$(grep -wc $username /etc/passwd)" != '0' ]] && {
+        echo -e "\n${cor1}ESTE TOKEN JÁ EXISTE. TENTE OUTRO TOKEN!${scor}\n"
+        exit 1
+    }
     [[ ${username} != ?(+|-)+([a-zA-Z0-9]) ]] && {
         echo -e "\n${cor1}VOCÊ DIGITOU UM TOKEN INVÁLIDO!${scor}"
         echo -e "${cor1}NÃO USE ESPAÇOS, ACENTOS OU CARACTERES ESPECIAIS!${scor}\n"
