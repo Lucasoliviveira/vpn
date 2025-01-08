@@ -326,7 +326,11 @@ do
 clear
 echo -e "\E[38;5;18m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
 echo -e "\E[38;5;18m┃\E[44;1;37m                FERRAMENTAS              \E[0m\E[38;5;18m┃"
-echo -e "\E[38;5;18m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m" 
+echo -e "\E[38;5;18m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m"
+echo -e "\E[38;5;196m|\E[38;5;33m01\E[38;5;196m|\033[1;37m➜ \E[1;37mSYNC PAINEL WEB 
+\E[38;5;196m|\E[38;5;33m02\E[38;5;196m|\033[1;37m➜ \E[1;37mMEMORIA VIRTUAL 
+\E[38;5;196m|\E[38;5;33m03\E[38;5;196m|\033[1;37m➜ \E[1;37mBOT TELEGRAM (GERENCIAR MAQUINA) $stsbot 
+\E[38;5;196m|\E[38;5;33m04\E[38;5;196m|\033[1;37m➜ \E[1;37mBOT TELEGRAM (CRIAR LOGINS GRATIS) $stsbotteste 
 \E[38;5;196m|\E[38;5;33m05\E[38;5;196m|\033[1;37m➜ \E[1;37mBLOQUEAR TORRENT 
 \E[38;5;196m|\E[38;5;33m06\E[38;5;196m|\033[1;37m➜ \E[1;37mBLOQUEAR SITE 
 \E[38;5;196m|\E[38;5;33m07\E[38;5;196m|\033[1;37m➜ \E[1;37mAUTO MENU $autm 
@@ -345,6 +349,26 @@ echo -e "\E[38;5;18m┗━━━━━━━━━━━━━━━━━━━
 echo ""
 echo -ne "\033[1;32mOQUE DESEJA FAZER \033[1;37m?\033[1;31m?\033[1;37m : "; read x
 case "$x" in 
+	1 | 01)
+   clear
+	syncpw
+	;;
+	
+	2 | 02)
+   clear
+	swapmemory
+	;;
+	
+	3 | 03)
+   clear
+   botssh
+   ;;
+   
+   4 | 04)
+   clear
+   inst-botteste
+   ;;
+   
    5 | 05)
    clear
    blockt
