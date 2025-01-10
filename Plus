@@ -94,18 +94,10 @@ cd > /dev/null 2>&1
 echo ""
 [[ -f "$HOME/usuarios.db" ]] && {
 clear
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "                   \033[1;37m• \033[1;31mATENCAO \033[1;37m• "
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo -e "\033[1;37mUma base de Dados de Usuários \033[1;32m(usuarios.db) \033[1;37mFoi "
 echo -e "\033[1;37mEncontrada! Deseja mantê-la preservando o limite"
 echo -e "\033[1;37mde Conexões simutaneas dos usuários ? Ou Deseja"
 echo -e "\033[1;37mcriar uma nova base de dados ?"
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "\033[1;37m[\033[1;31m1\033[1;37m] \033[1;37mManter Base de Dados Atual"
-echo -e "\033[1;37m[\033[1;31m2\033[1;37m] \033[1;37mCriar uma Nova Base de Dados"
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo ""
 tput setaf 2 ; tput bold ; read -p "Opção ?: " -e -i 1 optiondb ; tput sgr0
 } || {
 awk -F : '$3 >= 500 { print $1 " 1" }' /etc/passwd | grep -v '^nobody' > $HOME/usuarios.db
@@ -114,10 +106,6 @@ awk -F : '$3 >= 500 { print $1 " 1" }' /etc/passwd | grep -v '^nobody' > $HOME/u
 clear
 tput setaf 7 ; tput setab 4 ; tput bold ; printf '%35s%s%-18s\n' " AGUARDE A INSTALAÇÃO" ; tput sgr0
 echo ""
-echo ""
-echo -e "          \033[1;37m[\033[1;31m!\033[1;37m] \033[1;32mATUALIZANDO SISTEMA \033[1;37m[\033[1;31m!\033[1;37m]\033[0m"
-echo ""
-echo -e "    \033[1;37mATUALIZAÇÕES COSTUMAM DEMORAR UM POUCO!\033[0m"
 echo ""
 fun_attlist () {
 apt-get update -y
