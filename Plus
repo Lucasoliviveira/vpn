@@ -1,63 +1,67 @@
 #!/bin/bash
 clear
-[[ "$(whoami)" != "root" ]] && {
-echo -e "\033[1;37m[\033[1;31mErro\033[1;37m] \033[1;37m- \033[1;37mvocê precisa executar como root\033[0m"
-rm $HOME/Plus > /dev/null 2>&1; exit 0
-}
-_lnk=$(echo 'z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r'| sed -e 's/[^a-z.]//ig'| rev); _Ink=$(echo '/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×'|sed -e 's/[^a-z/]//ig'); _1nk=$(echo '/3×u3#s×87r/83×l2×4×i0b×'|sed -e 's/[^a-z/]//ig')
-cd $HOME
+
+# Verificação se o script está sendo executado como root
+if [ "$(id -u)" -ne 0 ]; then
+    echo -e "\033[1;37m[\033[1;31mErro\033[1;37m] \033[1;37m- \033[1;37mvocê precisa executar como root\033[0m"
+    rm -f $HOME/Plus > /dev/null 2>&1
+    exit 1
+fi
+
+# Definindo variáveis
+_lnk=$(echo 'z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r' | sed -e 's/[^a-z.]//ig' | rev)
+_Ink=$(echo '/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×' | sed -e 's/[^a-z/]//ig')
+_1nk=$(echo '/3×u3#s×87r/83×l2×4×i0b×' | sed -e 's/[^a-z/]//ig')
+
+# Função de barra de progresso
 fun_bar () {
-comando[0]="$1"
-comando[1]="$2"
-(
-[[ -e $HOME/fim ]] && rm $HOME/fim
-${comando[0]} -y > /dev/null 2>&1
-${comando[1]} -y > /dev/null 2>&1
-touch $HOME/fim
-) > /dev/null 2>&1 &
-tput civis
-echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
-while true; do
-for((i=0; i<18; i++)); do
-echo -ne "\033[1;31m#"
-sleep 0.1s
-done
-[[ -e $HOME/fim ]] && rm $HOME/fim && break
-echo -e "\033[1;37m]"
-tput cuu1
-tput dl1
-echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
-done
-echo -e "\033[1;37m]\033[1;37m -\033[1;32m OK !\033[1;37m"
-tput cnorm
+    comando[0]="$1"
+    comando[1]="$2"
+    (
+        [[ -e $HOME/fim ]] && rm $HOME/fim
+        ${comando[0]} -y > /dev/null 2>&1
+        ${comando[1]} -y > /dev/null 2>&1
+        touch $HOME/fim
+    ) > /dev/null 2>&1 &
+    tput civis
+    echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
+    while true; do
+        for ((i=0; i<18; i++)); do
+            echo -ne "\033[1;31m#"
+            sleep 0.1s
+        done
+        [[ -e $HOME/fim ]] && rm $HOME/fim && break
+        echo -e "\033[1;37m]"
+        tput cuu1
+        tput dl1
+        echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
+    done
+    echo -e "\033[1;37m]\033[1;37m -\033[1;32m OK !\033[1;37m"
+    tput cnorm
 }
-function verif_key () {
-krm=$(echo '5:q-3gs2.o7%8:1'|rev); chmod +x $_Ink/list > /dev/null 2>&1
-[[ ! -e "$_Ink/list" ]] && {
-echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
-rm -rf $HOME/Plus > /dev/null 2>&1
-clear; exit 1
+
+# Função de verificação da chave
+verif_key () {
+    krm=$(echo '5:q-3gs2.o7%8:1' | rev)
+    chmod +x $_Ink/list > /dev/null 2>&1
+    if [[ ! -e "$_Ink/list" ]]; then
+        echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
+        rm -rf $HOME/Plus > /dev/null 2>&1
+        clear
+        exit 1
+    fi
 }
-}
+
+# Função de otimização do Python
 otimize_python() {
-apt install pip -y
-apt install python3-pip -y
-pip install speedtest-cli
-apt install uuid-runtime
-apt install socat -y
-apt-get install python-minimal -y >/dev/null 2>&1
-apt-get install libpython-stdlib -y >/dev/null 2>&1
-apt-get install python -y >/dev/null 2>&1
-apt-get install python2 -y >/dev/null 2>&1
-apt-get install python3.6 -y >/dev/null 2>&1
-apt-get install python3.7 -y >/dev/null 2>&1
-apt-get install python3.8 -y >/dev/null 2>&1
-apt-get install python3.9 -y >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 3 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 4 >/dev/null 2>&1
-update-alternatives --set python3 /usr/bin/python3.6
+    apt-get update -y > /dev/null 2>&1
+    apt-get install -y python3-pip pip uuid-runtime socat python-minimal libpython-stdlib python python2 python3.6 python3.7 python3.8 python3.9 > /dev/null 2>&1
+
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 3 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2 >/dev/null 2>&1
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 4 >/dev/null 2>&1
+    update-alternatives --set python3 /usr/bin/python3.6
 }
 echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo -e "\E[38;5;118m        ⇱ BEM VINDO AO SSH PLUS!! ⇲             "
