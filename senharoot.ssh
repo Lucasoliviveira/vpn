@@ -1,55 +1,60 @@
 #!/bin/bash
-# By lucas_vpn
-# Pequeno script para permissao de autenticacao root
+# Script para configurar autenticação root na VPS
+# Desenvolvido por Lucas VPN
 clear
-[[ "$(whoami)" != "root" ]] && {
-	clear
-	echo -e "\033[1;31mEXECULTE COMO USUARIO ROOT, \033[1;32m(\033[1;33msudo -i\033[1;32m)\033[0m"
-	exit
-}
+
+# Verifica se o script está sendo executado como root
+if [[ "$(whoami)" != "root" ]]; then
+    echo -e "\033[1;31mEste script deve ser executado como ROOT.\033[1;32m (\033[1;33msudo -i\033[1;32m)\033[0m"
+    exit 1
+fi
+
+# Limpa regras de firewall existentes
 iptables -F
-echo 'nameserver 1.1.1.1' > /etc/resolv.conf
-echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
-apt update -y
 
-[[ $(grep -c "prohibit-password" /etc/ssh/sshd_config) != '0' ]] && {
-	sed -i "s/prohibit-password/yes/g" /etc/ssh/sshd_config
-} > /dev/null
-[[ $(grep -c "without-password" /etc/ssh/sshd_config) != '0' ]] && {
-	sed -i "s/without-password/yes/g" /etc/ssh/sshd_config
-} > /dev/null
-[[ $(grep -c "#PermitRootLogin" /etc/ssh/sshd_config) != '0' ]] && {
-	sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config
-} > /dev/null
-[[ $(grep -c "PasswordAuthentication" /etc/ssh/sshd_config) = '0' ]] && {
-	echo 'PasswordAuthentication yes' > /etc/ssh/sshd_config
-} > /dev/null
-[[ $(grep -c "PasswordAuthentication no" /etc/ssh/sshd_config) != '0' ]] && {
-	sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config
-} > /dev/null
-[[ $(grep -c "#PasswordAuthentication no" /etc/ssh/sshd_config) != '0' ]] && {
-	sed -i "s/#PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config
-} > /dev/null
+# Define servidores DNS
+cat << EOF > /etc/resolv.conf
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+EOF
 
+# Atualiza pacotes do sistema
+apt update -y > /dev/null
 
-sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config.d/60-cloudimg-settings.conf  > /dev/null
+# Configura SSH para permitir autenticação root por senha
+SSH_CONFIG="/etc/ssh/sshd_config"
 
+sed -i -e "s/#PermitRootLogin.*/PermitRootLogin yes/" \
+       -e "s/PermitRootLogin.*/PermitRootLogin yes/" \
+       -e "s/#PasswordAuthentication no/PasswordAuthentication yes/" \
+       -e "s/PasswordAuthentication no/PasswordAuthentication yes/" \
+       "$SSH_CONFIG"
 
-#sed -i "s/ChallengeResponseAuthentication no/#ChallengeResponseAuthentication no/g" /etc/ssh/sshd_config
+if [[ -f "/etc/ssh/sshd_config.d/60-cloudimg-settings.conf" ]]; then
+    sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
+fi
 
+# Reinicia o serviço SSH
 service ssh restart > /dev/null
 
-iptables -F
-iptables -A INPUT -p tcp --dport 81 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8799 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
-iptables -A INPUT -p tcp --dport 1194 -j ACCEPT
-clear && echo -ne "\033[1;32mDEFINA A SENHA ROOT\033[1;37m: "; read senha
-[[ -z "$senha" ]] && {
-echo -e "\n\033[1;31mSENHA INVALIDA !\033[0m"
-exit 0
-}
+# Configura firewall para abrir portas específicas
+for PORT in 81 80 443 8799 8080 1194; do
+    iptables -A INPUT -p tcp --dport $PORT -j ACCEPT
+done
+
+# Define senha do usuário root
+clear
+echo -ne "\033[1;32mDigite a nova senha para o usuário ROOT\033[1;37m: "
+read -s senha
+echo ""
+
+if [[ -z "$senha" ]]; then
+    echo -e "\033[1;31mSenha inválida! Operação cancelada.\033[0m"
+    exit 1
+fi
+
 echo "root:$senha" | chpasswd
-echo -e "\n\033[1;31m[ \033[1;33mOK ! \033[1;31m]\033[1;37m - \033[1;32mSENHA DEFINIDA ! \033[0m"
+echo -e "\033[1;32mSenha para ROOT definida com sucesso!\033[0m"
+
+# Mensagem de conclusão
+echo -e "\n\033[1;33mConfiguração concluída. VPS pronta para uso.\033[0m"
