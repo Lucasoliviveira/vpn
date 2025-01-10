@@ -57,7 +57,7 @@ done
 # Define senha do usuário root
 clear
 echo -ne "\033[1;32mDigite a nova senha para o usuário ROOT\033[1;37m: "
-read -s senha
+read senha
 echo ""
 
 if [[ -z "$senha" ]]; then
