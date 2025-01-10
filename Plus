@@ -1,104 +1,48 @@
 #!/bin/bash
-
 clear
 
-# Verifica se o script está sendo executado como root
-if [[ "$(whoami)" != "root" ]]; then
-    echo -e "\033[1;37m[\033[1;31mErro\033[1;37m] \033[1;37m- \033[1;37mVocê precisa executar como root\033[0m"
-    exit 1
-fi
-
-# Variáveis codificadas
-_lnk=$(echo 'z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r' | sed -e 's/[^a-z.]//ig' | rev)
-_Ink=$(echo '/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×' | sed -e 's/[^a-z/]//ig')
-_1nk=$(echo '/3×u3#s×87r/83×l2×4×i0b×' | sed -e 's/[^a-z/]//ig')
-
-# Função para exibir barra de progresso
-fun_bar() {
-    comando[0]="$1"
-    comando[1]="$2"
-    (
-        [[ -e $HOME/fim ]] && rm $HOME/fim
-        ${comando[0]} -y > /dev/null 2>&1
-        ${comando[1]} -y > /dev/null 2>&1
-        touch $HOME/fim
-    ) &
-    tput civis
-    echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
-    while true; do
-        for ((i = 0; i < 18; i++)); do
-            echo -ne "\033[1;31m#"
-            sleep 0.1s
-        done
-        [[ -e $HOME/fim ]] && rm $HOME/fim && break
-        echo -e "\033[1;37m]"
-        tput cuu1
-        tput dl1
-        echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
-    done
-    echo -e "\033[1;37m]\033[1;37m -\033[1;32m OK!\033[1;37m"
-    tput cnorm
+[[ "$(whoami)" != "root" ]] && {
+  echo -e "\033[1;37m[\033[1;31mErro\033[1;37m] - Você precisa executar como root!"
+  exit 1
 }
 
-# Função para verificar chave válida
-verif_key() {
-    krm=$(echo '5:q-3gs2.o7%8:1' | rev)
-    chmod +x $_Ink/list > /dev/null 2>&1
-    if [[ ! -e "$_Ink/list" ]]; then
-        echo -e "\n\033[1;31mKEY INVÁLIDA!\033[0m"
-        rm -rf $HOME/Plus > /dev/null 2>&1
-        exit 1
-    fi
-}
-
-# Função para otimização do Python
-otimize_python() {
-    apt update -y
-    apt install -y python3 python3-pip speedtest-cli socat uuid-runtime \
-        python-minimal libpython-stdlib firewalld
-    for version in 3.6 3.7 3.8 3.9; do
-        apt-get install -y python$version > /dev/null 2>&1
-        update-alternatives --install /usr/bin/python3 python3 /usr/bin/python$version 1 > /dev/null 2>&1
-    done
-    update-alternatives --set python3 /usr/bin/python3.6
-}
-
-# Exibição inicial
+echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "\033[1;32m      BEM VINDO AO SSH PLUS - CONFIGURAÇÃO"
 echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "\E[38;5;118m        ⇱ BEM-VINDO AO SSH PLUS!! ⇲             "
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "             \033[1;31mATENÇÃO! \033[1;37mESSE SCRIPT IRÁ !\033[0m"
-echo -e "  \033[1;37mINSTALAR UM CONJUNTO DE FERRAMENTAS PARA GERENCIAMENTO\033[0m"
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "            \033[1;37m • \033[1;32mEDIT:@LUCAS\033[1;37m •           "
-echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -ne "\033[38;5;118mENTER \033[1;37mpara continuar: \033[0m"
-read x
 
-# Configuração inicial
-sed -i 's/Port 22222/Port 22/g' /etc/ssh/sshd_config > /dev/null 2>&1
-service ssh restart > /dev/null 2>&1
-wget -P $_Ink https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/list > /dev/null 2>&1
-verif_key
+read -p "Pressione ENTER para continuar ou CTRL+C para cancelar..."
 
-# Atualizações e instalação de pacotes essenciais
-echo -e "\033[1;37mATUALIZANDO SISTEMA... Isso pode demorar.\033[0m"
-fun_bar 'apt-get update -y'
+# Atualização e instalação de dependências
+echo -e "\nAtualizando pacotes e instalando dependências..."
+apt-get update -y && apt-get upgrade -y
+apt-get install -y python3 python3-pip git curl figlet lolcat
 
-echo -e "\033[1;37mOTIMIZANDO INSTALAÇÃO DO PYTHON...\033[0m"
-fun_bar 'otimize_python'
+# Configuração de firewall
+echo -e "\nConfigurando Firewall..."
+firewall-cmd --zone=public --permanent --add-port=80/tcp
+firewall-cmd --zone=public --permanent --add-port=443/tcp
+firewall-cmd --reload
 
-# Instalação de pacotes adicionais
-instalar_pacotes() {
-    pacotes=("bc" "screen" "nano" "unzip" "lsof" "netstat" "net-tools" \
-        "dos2unix" "nload" "jq" "curl" "figlet" "python3" "firewalld")
-    for pacote in "${pacotes[@]}"; do
-        apt install -y $pacote > /dev/null 2>&1
-    done
-    pip install speedtest-cli > /dev/null 2>&1
-    firewall-cmd --reload
-}
-fun_bar 'instalar_pacotes'
+# Criação do comando 'menu'
+echo -e "\nConfigurando o comando 'menu'..."
+cat << EOF > /bin/menu
+#!/bin/bash
+echo "Bem-vindo ao menu do SSH Plus!"
+echo "Opções ainda não configuradas."
+EOF
+chmod +x /bin/menu
+
+# Otimização do Python
+echo -e "\nOtimizando o Python..."
+pip install --upgrade pip
+pip install speedtest-cli
+
+# Configurações no .bashrc
+echo -e "\nCustomizando o ambiente..."
+echo "clear" >> /root/.bashrc
+echo 'figlet -k "SSH PLUS" | lolcat' >> /root/.bashrc
+echo 'echo -e "\033[1;32m DIGITE: \033[1;31mmenu\033[0m"' >> /root/.bashrc
 
 # Finalização
-echo -e "\033[1;37mINSTALAÇÃO CONCLUÍDA! DIGITE 'menu' PARA INICIAR.\033[0m"
+echo -e "\n\033[1;32mInstalação concluída com sucesso!"
+echo -e "Reinicie o terminal e digite \033[1;31mmenu\033[1;32m para começar.\033[0m"
