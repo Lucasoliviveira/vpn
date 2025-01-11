@@ -276,12 +276,6 @@ case "$x" in
    25)
    blockt
    ;;
-   #26)
-   #botssh
-   #;;
-   #27)
-   #botteste.sh
-   #;;
    28)
    clear
    senharoot
