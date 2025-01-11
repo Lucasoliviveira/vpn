@@ -1,37 +1,54 @@
+#!/bin/bash
+
 clear
 op=$1
-[[ ! -d /usr/share/.plus ]] && exit 0
+
+# Verifica se o diretório /usr/share/.plus existe
+if [[ ! -d /usr/share/.plus ]]; then
+    exit 0
+fi
+
+# Função para desinstalar o Squid3 e limpar pacotes antigos
 fun_sqd01() {
-[[ -e /etc/apt/sources.list.d/trusty_sources.list ]] && {
-rm /etc/apt/sources.list.d/trusty_sources.list >/dev/null 2>&1
-[[ $(grep -wc 'Debian' /etc/issue.net) != '0' ]] && {
-apt-key del 3B4FE6ACC0B21F32 >/dev/null 2>&1
+    # Remove o arquivo de fontes de repositório antigo se ele existir
+    if [[ -e /etc/apt/sources.list.d/trusty_sources.list ]]; then
+        rm /etc/apt/sources.list.d/trusty_sources.list
+        if [[ $(grep -wc 'Debian' /etc/issue.net) -ne 0 ]]; then
+            apt-key del 3B4FE6ACC0B21F32
+        fi
+        apt remove squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6 -y
+        apt update -y
+        apt autoremove -y
+    fi
+    apt install squid3 -y
 }
-apt remove squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6 -y >/dev/null 2>&1
-apt update -y >/dev/null 2>&1
-apt autoremove -y >/dev/null 2>&1
-}
-apt install squid3 -y >/dev/null 2>&1
-}
+
+# Função para configurar o Squid3 com o repositório Trusty
 fun_sqd02() {
-[[ ! -e /etc/apt/sources.list.d/trusty_sources.list ]] && {
-touch /etc/apt/sources.list.d/trusty_sources.list >/dev/null 2>&1
-echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" | tee --append /etc/apt/sources.list.d/trusty_sources.list >/dev/null 2>&1
+    # Adiciona repositório Trusty se ele não existir
+    if [[ ! -e /etc/apt/sources.list.d/trusty_sources.list ]]; then
+        echo "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe" > /etc/apt/sources.list.d/trusty_sources.list
+    fi
+
+    # Se o sistema for Debian, instala dirmngr e adiciona a chave do repositório Ubuntu
+    if [[ $(grep -wc 'Debian' /etc/issue.net) -ne 0 ]]; then
+        apt install dirmngr -y
+        if [[ $(apt-key list 2>/dev/null | grep -c 'Ubuntu') -eq 0 ]]; then
+            apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32
+        fi
+    fi
+
+    # Atualiza repositórios e instala o Squid3
+    apt update -y
+    apt install squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6 -y
+    wget -qO- https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/squid3 > /etc/init.d/squid3
+    chmod +x /etc/init.d/squid3
+    update-rc.d squid3 defaults
 }
-[[ $(grep -wc 'Debian' /etc/issue.net) != '0' ]] && {
-apt install dirmngr -y >/dev/null 2>&1
-[[ $(apt-key list 2>/dev/null | grep -c 'Ubuntu') == '0' ]] && {
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32 >/dev/null 2>&1
-}
-}
-apt update -y >/dev/null 2>&1
-apt install squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6 -y >/dev/null 2>&1
-wget -qO- https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/squid3 >/etc/init.d/squid3
-chmod +x /etc/init.d/squid3 >/dev/null 2>&1
-update-rc.d squid3 defaults >/dev/null 2>&1
-}
-[[ $op == '1' ]] && {
-fun_sqd02
-} || {
-fun_sqd01
-}
+
+# Executa a função com base na opção fornecida
+if [[ $op == '1' ]]; then
+    fun_sqd02
+else
+    fun_sqd01
+fi
