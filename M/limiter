@@ -1,35 +1,55 @@
 #!/bin/bash
-clear
+
+# Caminho para o banco de dados de usuários
 database="/root/usuarios.db"
-echo $$ > /tmp/pids
-if [ ! -f "$database" ]
-then
-	echo "Archivo /root/usuarios.db no encontrado"
-	exit 1
+# Arquivo temporário para armazenar informações de processos
+temp_file="/tmp/tmp_processes.txt"
+
+# Verifica se o banco de dados existe
+if [ ! -f "$database" ]; then
+    echo "Arquivo /root/usuarios.db não encontrado!"
+    exit 1
 fi
-while true
-do
-	while read usline
-	do
-		user="$(echo $usline | cut -d' ' -f1)"
-		s2ssh="$(echo $usline | cut -d' ' -f2)"
-		if [ -z "$user" ] ; then
-			echo "" > /dev/null
-		else
-			ps x | grep [[:space:]]$user[[:space:]] | grep -v grep | grep -v pts > /tmp/tmp2
-			s1ssh="$(cat /tmp/tmp2 | wc -l)"
-			tput setaf 3 ; tput bold ; printf '  %-35s%s\n' $user $s1ssh/$s2ssh; tput sgr0
-			if [ "$s1ssh" -gt "$s2ssh" ]; then
-				while read line
-				do
-					tmp="$(echo $line | cut -d' ' -f1)"
-					kill $tmp
-				done < /tmp/tmp2
-				rm /tmp/tmp2
-			fi
-		fi
-		
-	done < "$database"
-	sleep 2
-	clear
+
+# Função para verificar e matar processos SSH excedentes
+kill_extra_sessions() {
+    local user=$1
+    local max_sessions=$2
+    
+    # Verifica processos ativos do usuário
+    ps x | grep -E "[[:space:]]$user[[:space:]]" | grep -v grep | grep -v pts > "$temp_file"
+    
+    # Conta o número de sessões SSH ativas
+    local active_sessions=$(wc -l < "$temp_file")
+
+    # Exibe o número de sessões ativas e o limite permitido
+    tput setaf 3; tput bold; printf '  %-35s%s\n' "$user" "$active_sessions/$max_sessions"; tput sgr0
+    
+    # Se o número de sessões exceder o limite, mata as sessões extras
+    if [ "$active_sessions" -gt "$max_sessions" ]; then
+        # Calcula quantas sessões devem ser encerradas
+        local excess_sessions=$((active_sessions - max_sessions))
+        
+        # Mata os processos excedentes
+        head -n "$excess_sessions" "$temp_file" | while read line; do
+            local pid=$(echo "$line" | awk '{print $1}')
+            kill "$pid" && echo "Processo $pid de $user encerrado."
+        done
+    fi
+}
+
+# Loop principal
+while true; do
+    # Processa cada linha do banco de dados
+    while IFS=' ' read -r user max_sessions; do
+        # Verifica se o nome de usuário está vazio
+        if [ -n "$user" ]; then
+            # Chama a função para verificar e matar processos SSH excedentes
+            kill_extra_sessions "$user" "$max_sessions"
+        fi
+    done < "$database"
+
+    # Aguarda 2 segundos e limpa a tela para nova verificação
+    sleep 2
+    clear
 done
