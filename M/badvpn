@@ -16,7 +16,7 @@ menu_badvpn() {
         echo -e "\033[1;33mPORTAS\033[1;37m: \033[1;32m$(netstat -nplt | grep 'badvpn-ud' | awk '{print $4}' | cut -d: -f2 | xargs)"
     fi
 
-    echo -e "\E[38;5;196m|\E[38;5;33m01\E[38;5;196m|\033[1;37m➜ \033[1;33mATIVAR/DESATIVAR BADVPN (PADRÃO 7300) $([ $(is_badvpn_active) ] && echo "\033[1;32m♦" || echo "\033[1;31m○") \033[0m"
+    echo -e "\E[38;5;196m|\E[38;5;33m01\E[38;5;196m|\033[1;37m➜ \033[1;33mATIVAR/DESATIVAR BADVPN (PADRÃO 7300) $([ $(is_badvpn_active) ] && echo "\033[1;32m♦" || echo "\033[1;31m") \033[0m"
     echo -e "\E[38;5;196m|\E[38;5;33m02\E[38;5;196m|\033[1;37m➜ \033[1;33mATIVAR AS PORTAS BADVPN (7100-7900)\033[0m"
     echo -e "\E[38;5;196m|\E[38;5;33m03\E[38;5;196m|\033[1;37m➜ \033[1;33mABRIR PORTA\033[0m"
     echo -e "\E[38;5;196m|\E[38;5;33m00\E[38;5;196m|\033[1;37m➜ \033[1;33mVOLTAR\033[0m"
