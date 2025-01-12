@@ -11,10 +11,10 @@ comando[0]="$1"
 comando[1]="$2"
 (
 [[ -e $HOME/fim ]] && rm $HOME/fim
-${comando[0]} -y > /dev/null 2>&1
-${comando[1]} -y > /dev/null 2>&1
+${comando[0]} -y
+${comando[1]} -y
 touch $HOME/fim
-) > /dev/null 2>&1 &
+) &
 tput civis
 echo -ne "  \033[1;37mAGUARDE \033[1;37m- \033[1;37m["
 while true; do
@@ -45,18 +45,18 @@ apt install python3-pip -y
 pip install speedtest-cli
 apt install uuid-runtime
 apt install socat -y
-apt-get install python-minimal -y >/dev/null 2>&1
-apt-get install libpython-stdlib -y >/dev/null 2>&1
-apt-get install python -y >/dev/null 2>&1
-apt-get install python2 -y >/dev/null 2>&1
-apt-get install python3.6 -y >/dev/null 2>&1
-apt-get install python3.7 -y >/dev/null 2>&1
-apt-get install python3.8 -y >/dev/null 2>&1
-apt-get install python3.9 -y >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 3 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2 >/dev/null 2>&1
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 4 >/dev/null 2>&1
+apt-get install python-minimal -y
+apt-get install libpython-stdlib -y
+apt-get install python -y
+apt-get install python2 -y
+apt-get install python3.6 -y
+apt-get install python3.7 -y
+apt-get install python3.8 -y
+apt-get install python3.9 -y
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 3
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 4
 update-alternatives --set python3 /usr/bin/python3.6
 }
 echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
@@ -65,26 +65,25 @@ echo -e "\033[1;37m━━━━━━━━━━━━━━━━━━━━�
 #-----------------------------------------------------------------------------------------------------------------
 echo -ne "\033[38;5;118mENTER \033[1;37mpara continuar a \033[1;31mINSTALACAO : \033[0m"; read x
 [[ $x = @(n|N) ]] && exit
-sed -i 's/Port 22222/Port 22/g' /etc/ssh/sshd_config  > /dev/null 2>&1
-service ssh restart  > /dev/null 2>&1;
-rm $_Ink/list > /dev/null 2>&1; wget -P $_Ink https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/list > /dev/null 2>&1; verif_key
-echo "/bin/menu" > /bin/h && chmod +x /bin/h > /dev/null 2>&1
+sed -i 's/Port 22222/Port 22/g' /etc/ssh/sshd_config
+service ssh restart
+rm $_Ink/list > /dev/null 2>&1; wget -P $_Ink https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/list
+verif_key
+echo "/bin/menu" > /bin/h && chmod +x /bin/h
 rm versao* > /dev/null 2>&1
-wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/versao > /dev/null 2>&1
-> /dev/null 2>&1
-wget https://iplogger.org/10BEq > /dev/null 2>&1
-> /dev/null 2>&1
+wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/versao
+wget https://iplogger.org/10BEq
 rm 2lHZ43 > /dev/null 2>&1
-cd /bin/ > /dev/null 2>&1
+cd /bin/
 rm v2raymanager > /dev/null 2>&1
-wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/M/v2raymanager > /dev/null 2>&1
-wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/M/botteste.sh >/dev/null 2>&1
-chmod 777 v2raymanager > /dev/null 2>&1
-chmod 777 botteste.sh >/dev/null 2>&1
-mkdir $HOME/BOT >/dev/null 2>&1
+wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/M/v2raymanager
+wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/M/botteste.sh
+chmod 777 v2raymanager
+chmod 777 botteste.sh
+mkdir $HOME/BOT
 cd $HOME/BOT
-wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/ShellBot.sh >/dev=null 2>&1
-chmod 777 ShellBot.sh >/dev/null 2>&1
+wget https://raw.githubusercontent.com/Lucasoliviveira/vpn/main/I/ShellBot.sh
+chmod 777 ShellBot.sh
 cd > /dev/null 2>&1
 #-----------------------------------------------------------------------------------------------------------------
 echo ""
@@ -111,11 +110,11 @@ clear
 tput setaf 7 ; tput setab 4 ; tput bold ; printf '%35s%s%-18s\n' " AGUARDE A INSTALAÇÃO" ; tput sgr0
 fun_attlist () {
 apt-get update -y
-apt-get install lolcat -y &>/dev/null
-apt-get install figlet -y &>/dev/null
-apt-get install curl -y &>/dev/null
-apt install git -y &>/dev/null
-apt install figlet boxes -y &>/dev/null
+apt-get install lolcat -y
+apt-get install figlet -y
+apt-get install curl -y
+apt install git -y
+apt install figlet boxes -y
 [[ ! -d /usr/share/.plus ]] && mkdir /usr/share/.plus
 echo "crz: $(date)" > /usr/share/.plus/.plus
 }
